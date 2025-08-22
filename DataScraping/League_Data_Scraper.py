@@ -69,6 +69,12 @@ for i, team_url in enumerate(team_urls, 1):
         # Add team name
         team_data["Team"] = team_name
         
+        # Clean up Age column - extract just the years from "xx-xxx" format
+        if 'Age' in team_data.columns:
+            team_data['Age'] = team_data['Age'].astype(str).str.split('-').str[0]
+            # Convert to numeric, handling any non-numeric values
+            team_data['Age'] = pd.to_numeric(team_data['Age'], errors='coerce')
+        
         # Remove rows where Player is NaN or contains 'Squad Total' or 'Opponent Total'
         team_data = team_data[team_data['Player'].notna()]
         team_data = team_data[~team_data['Player'].str.contains('Squad Total|Opponent Total', na=False)]
